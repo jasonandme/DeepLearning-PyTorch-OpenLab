@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environments
+venv/
+.venv/
+env/
+.env
+
+# Generated or local-only files
+generated/
+scratch/
+local_files/
+private_data/
+external_assets/
+
+# Large local files and archives
+data/
+datasets/
+*.[pP][dD][fF]
+*.zip
+*.tar
+*.tar.gz
+*.pt
+*.pth
+*.ckpt
+
+# Local outputs
+outputs/
+runs/
+logs/
+results/*.png
+results/*.csv
+results/*.json
+
+# OS and editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
