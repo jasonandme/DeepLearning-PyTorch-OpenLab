@@ -8,6 +8,8 @@ DeepLearning-PyTorch-OpenLab 是一个面向深度学习初学者的 PyTorch 学
 
 项目重点不是提出新的算法，而是把基础概念、代码实现、实验观察和常见问题整理成一个可运行、可复现、可扩展的学习项目。
 
+如果这个项目对你的学习有帮助，欢迎 Star 支持，也欢迎通过 issue 提出改进建议。
+
 ## 项目适合谁
 
 - 正在入门深度学习和 PyTorch 的学习者。
@@ -140,6 +142,10 @@ python -m src.train --task mlp --epochs 80
 - [docs/debugging_guide.md](docs/debugging_guide.md)：常见 PyTorch 错误与修正方式，包括 shape、dtype、学习率、训练/评估模式等问题。
 - [docs/experiment_notes.md](docs/experiment_notes.md)：记录各实验的目标、设置、观察和结论。
 - [docs/roadmap.md](docs/roadmap.md)：后续计划，包括更多数据集、模型对比、训练日志、推理 Demo 和部署示例。
+
+## 资源说明
+
+本仓库只包含原创学习笔记、实验代码和项目文档，不分发第三方受版权保护材料。建议读者通过正规渠道获取拓展阅读材料。
 
 ## 项目亮点
 
