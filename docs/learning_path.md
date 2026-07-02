@@ -1,112 +1,131 @@
 # 深度学习与 PyTorch 学习路线
 
-这份路线面向刚开始学习深度学习和 PyTorch 的读者。建议先用小实验跑通核心流程，再逐步扩展到更复杂的模型和任务。
+这份路线对应 `notebooks/` 下的 18 个主题 Notebook。建议按顺序学习，因为后面的实验会复用前面的 Tensor、Autograd、训练循环和 shape 管理经验。
 
-## 为什么先学 Tensor 和 Autograd
+## 阶段一：PyTorch 基础
 
-Tensor 是 PyTorch 中最基础的数据结构。输入数据、模型参数、梯度和中间特征都可以用 Tensor 表示。初学阶段如果不熟悉 Tensor 的 shape、dtype、广播和矩阵运算，后面写模型时很容易遇到维度错误。
+### 01 Tensor 基础
 
-Autograd 是 PyTorch 的自动求导机制。深度学习训练依赖梯度更新参数，而 Autograd 会根据 Tensor 运算自动构建计算图，并在 `backward()` 时计算梯度。
+先学 Tensor，是因为 PyTorch 中的数据、参数、梯度和中间特征都用 Tensor 表示。需要重点掌握 shape、dtype、device、广播和矩阵乘法。
 
-建议先掌握：
+对应 Notebook：`01_tensor_basics.ipynb`
 
-- 如何创建 Tensor。
-- 如何查看和调整 shape。
-- 什么是 `requires_grad`。
-- `loss.backward()` 后梯度保存在哪里。
-- 为什么训练循环中要清空梯度。
+### 02 Autograd 与计算图
 
-对应 Notebook：`01_tensor_autograd_basics.ipynb`。
+深度学习训练依赖梯度。Autograd 会根据 Tensor 运算构建计算图，并在 `backward()` 时计算梯度。需要理解梯度累积、清零和 `torch.no_grad()`。
 
-## 为什么线性回归适合作为第一个训练闭环
+对应 Notebook：`02_autograd_computation_graph.ipynb`
 
-线性回归模型简单，但训练流程完整。它能帮助学习者在较低认知负担下理解训练闭环：
+### 03 Module 与训练循环
 
-```text
-准备数据 -> 前向预测 -> 计算损失 -> 反向传播 -> 更新参数 -> 观察结果
-```
+`nn.Module` 用来组织模型结构和参数。标准训练循环包括前向计算、loss、清梯度、反向传播和优化器更新。
 
-线性回归适合入门的原因：
+对应 Notebook：`03_nn_module_training_loop.ipynb`
 
-- 预测公式直观，通常写成 `y = wx + b`。
-- 目标是连续值，方便用 MSELoss 衡量误差。
-- loss 曲线和拟合直线都容易观察。
-- 参数数量少，便于理解梯度更新。
+### 04 Dataset 与 DataLoader
 
-对应 Notebook：`02_linear_regression_from_scratch.ipynb`。
+DataLoader 让训练可以按 mini-batch 进行，也能处理 shuffle、batch size 等训练细节。
 
-## 为什么 MLP 是理解非线性建模的关键
+对应 Notebook：`04_dataset_dataloader.ipynb`
 
-线性模型只能表达线性关系。现实任务中，很多数据的边界不是直线。MLP 在多层线性变换之间加入激活函数，使模型具备非线性表达能力。
+## 阶段二：基础监督学习实验
 
-学习 MLP 时建议关注：
+### 05 线性回归
 
-- `nn.Linear` 如何改变特征维度。
-- ReLU 等激活函数为什么重要。
-- 分类任务中 logits 和 label 如何传入 `CrossEntropyLoss`。
-- 训练 loss 和测试 accuracy 如何一起观察。
+线性回归适合作为第一个完整训练闭环。它模型简单，但包含数据、模型、loss、优化和可视化观察。
 
-MLP 是从“简单训练循环”过渡到“神经网络建模”的关键一步。
+对应 Notebook：`05_linear_regression.ipynb`
 
-对应 Notebook：`03_mlp_classification.ipynb`。
+### 06 Logistic Regression 分类
 
-## CNN 解决了全连接网络处理图像时的什么问题
+分类任务需要理解 logits、类别标签和 `CrossEntropyLoss`。这一章帮助区分回归和分类的训练方式。
 
-如果直接把图像 flatten 后交给全连接网络，模型会弱化图像的空间结构，并且参数量容易变大。CNN 使用卷积核在图像局部区域滑动，通过参数共享学习局部特征。
+对应 Notebook：`06_logistic_regression_classification.ipynb`
 
-CNN 的主要优势：
+### 07 MLP 深层网络
 
-- 保留图像的二维空间结构。
-- 利用局部连接学习边缘、形状等模式。
-- 通过参数共享减少参数量。
-- 通过池化降低特征图尺寸。
+MLP 是理解非线性建模的关键。激活函数让模型能够学习弯曲的决策边界。
 
-学习 CNN 时，最重要的是理解输入 shape：`[batch, channel, height, width]`。
+对应 Notebook：`07_mlp_deep_network.ipynb`
 
-对应 Notebook：`04_cnn_image_classification.ipynb`。
+### 08 优化器与学习率
 
-## RNN/LSTM 为什么适合序列数据
+学习率会直接影响 loss 曲线。过大可能震荡，过小可能收敛慢。SGD 和 Adam 的对比能帮助理解优化器行为。
 
-序列数据的特点是顺序重要。例如时间序列、文本和语音中，当前元素通常和前面元素有关。RNN 和 LSTM 会按时间步读取输入，并用隐状态保存历史信息。
+对应 Notebook：`08_optimization_learning_rate.ipynb`
 
-普通 RNN 可以建模短期依赖，但在较长序列上容易训练困难。LSTM 引入门控机制，用更稳定的方式保留或遗忘信息，因此更适合处理较长的依赖关系。
+### 09 正则化
 
-学习序列模型时建议关注：
+当模型容量较大、数据较少时容易过拟合。Dropout 和 weight decay 是常见的正则化手段。
 
-- 如何用滑动窗口构造监督学习样本。
-- 输入 shape 为什么通常是 `[batch, seq_len, features]`。
-- 为什么可以用最后一个时间步的输出做预测。
-- 预测曲线是否跟随目标序列趋势。
+对应 Notebook：`09_regularization_dropout_weight_decay.ipynb`
 
-对应 Notebook：`05_rnn_lstm_sequence_modeling.ipynb`。
+## 阶段三：图像建模
 
-## Attention 为什么改变了序列建模方式
+### 10 CNN 基础
 
-RNN/LSTM 通常按顺序处理序列，远距离信息需要经过多个时间步传递。Attention 允许一个位置直接和其他位置建立关联，通过权重汇总相关信息。
+CNN 解决了全连接网络处理图像时弱化空间结构、参数量较大的问题。卷积层通过局部连接和参数共享学习图像模式。
 
-Attention 的核心变化：
+对应 Notebook：`10_cnn_basics.ipynb`
 
-- 不只依赖单个隐状态保存历史。
-- 可以直接计算任意两个位置之间的相关性。
-- 权重矩阵提供了观察模型关注位置的方式。
-- 更容易并行处理序列。
+### 11 CNN 图像分类
 
-理解 Attention 时，可以先掌握 scaled dot-product attention：
+在 digits 数据集上训练小型 CNN，观察 loss、预测样例和分类效果。
 
-```text
-QK^T -> scale -> softmax -> weighted sum of V
-```
+对应 Notebook：`11_cnn_image_classification_digits.ipynb`
 
-对应 Notebook：`06_attention_transformer_basics.ipynb`。
+### 12 CNN 特征可视化
 
-## 推荐学习顺序
+通过中间特征图和错误样本分析，理解模型不只是输出准确率，也可以被观察和复盘。
 
-1. **Tensor 与 Autograd**：理解数据表示和自动求导。
-2. **线性回归**：跑通第一个完整训练闭环。
-3. **MLP 分类**：理解非线性建模和分类 loss。
-4. **CNN 图像分类**：学习图像张量和局部特征表示。
-5. **RNN/LSTM 序列建模**：学习序列样本构造和时间依赖。
-6. **Attention/Transformer 基础**：理解注意力权重和序列关系建模。
-7. **扩展实验**：尝试更多数据集、模型对比、训练日志和推理 Demo。
+对应 Notebook：`12_cnn_feature_visualization.ipynb`
 
-每一阶段都建议同时完成三件事：运行代码、观察结果、记录问题。这样比只阅读概念更容易形成稳定理解。
+## 阶段四：序列建模
+
+### 13 RNN 基础
+
+RNN 适合处理有顺序关系的数据。重点理解 `[batch, seq_len, features]`、隐状态和最后时间步输出。
+
+对应 Notebook：`13_rnn_sequence_basics.ipynb`
+
+### 14 LSTM 时间序列预测
+
+LSTM 通过门控机制更稳定地保留历史信息。滑动窗口实验可以帮助理解序列预测样本如何构造。
+
+对应 Notebook：`14_lstm_time_series_prediction.ipynb`
+
+## 阶段五：Attention 与 Transformer
+
+### 15 从零实现 Attention
+
+Attention 通过 Query、Key、Value 计算相关性权重，再加权汇总信息。它改变了序列建模中信息交互的方式。
+
+对应 Notebook：`15_attention_from_scratch.ipynb`
+
+### 16 Multi-Head Attention
+
+多头注意力让模型从多个子空间观察关系。需要理解 `embed_dim`、`num_heads`、mask 和输出 shape。
+
+对应 Notebook：`16_multi_head_attention.ipynb`
+
+### 17 Transformer Encoder
+
+Encoder Block 组合了多头注意力、残差连接、LayerNorm 和前馈网络，是理解 Transformer 的关键模块。
+
+对应 Notebook：`17_transformer_encoder_basics.ipynb`
+
+## 阶段六：训练工程
+
+### 18 日志、Checkpoint 与复现实验
+
+一个学习项目不仅要能训练模型，还应能记录 loss/accuracy、保存 checkpoint，并说明实验设置和结果。
+
+对应 Notebook：`18_training_engineering_checkpoints_logs.ipynb`
+
+## 推荐学习方式
+
+1. 先完整运行 Notebook，不急着改代码。
+2. 第二遍只改一个变量，例如学习率、隐藏层宽度或 batch size。
+3. 记录 loss、accuracy 或可视化结果的变化。
+4. 遇到报错先查 shape、dtype、loss 使用方式和训练/评估模式。
+5. 学完一个阶段后，回到 `docs/concept_qa.md` 做概念复盘。
